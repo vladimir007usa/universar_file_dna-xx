@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 python-multipart
-pure-magic
+puremagic
 ExifRead
 pdfminer.six
 python-docx
