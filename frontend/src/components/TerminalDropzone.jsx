@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Terminal, ShieldAlert } from 'lucide-react';
+import { Terminal, ShieldAlert, Skull, Zap, Lock, Unlock } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -20,86 +20,74 @@ export const TerminalDropzone = ({ onFileSelect, isScanning }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: false,
-    disabled: isScanning
+    disabled: isScanning,
+    multiple: false
   });
 
   return (
-    <div
+    <div 
       {...getRootProps()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "relative w-full h-80 cyber-border flex flex-col items-center justify-center transition-all duration-300 cursor-pointer group overflow-hidden",
-        isDragActive ? "bg-ghost-green/5 border-ghost-green scale-[1.01]" : "bg-void/40 hover:bg-ghost-green/5",
-        isScanning && "pointer-events-none opacity-50"
+        "relative min-h-[400px] zigzag-border transition-all duration-100 cursor-crosshair overflow-hidden group",
+        isDragActive ? "border-static-cyan bg-static-cyan/10 scale-[1.05] rotate-1" : "border-rage-red/30 bg-void",
+        (isHovered || isDragActive) && "melting-filter"
       )}
     >
       <input {...getInputProps()} />
-
-      <AnimatePresence>
-        {(isHovered || isDragActive) && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 pointer-events-none"
-          >
-             <div className="absolute inset-x-0 top-0 h-[2px] bg-ghost-green animate-scanline opacity-20" />
-             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="relative z-10 flex flex-col items-center gap-6 p-8 text-center">
+      
+      {/* Dynamic Background Noise */}
+      <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/b/b2/TV_Static.gif')] mix-blend-overlay pointer-events-none" />
+      
+      <div className="relative z-10 flex flex-col items-center gap-10 p-12 text-center">
         <div className="relative">
           <motion.div
             animate={(isHovered || isDragActive) ? {
-              skewX: [0, -10, 10, -5, 0],
-              x: [0, -5, 5, 0],
-              filter: ["none", "hue-rotate(90deg)", "none"]
+              skewX: [0, -30, 30, -15, 0],
+              x: [0, -15, 15, 0],
+              filter: ["none", "hue-rotate(180deg)", "none"],
+              scale: [1, 1.3, 0.8, 1.1, 1]
             } : {}}
             transition={{ repeat: Infinity, duration: 0.1 }}
           >
-            <Terminal 
-              size={80} 
+            <Skull 
+              size={120} 
               className={cn(
-                "transition-colors duration-300",
-                isDragActive ? "text-risk-critical" : "text-ghost-green/20 group-hover:text-risk-critical"
+                "transition-colors duration-100 animate-pulse",
+                isDragActive ? "text-static-cyan" : "text-rage-red/20 group-hover:text-rage-red"
               )} 
             />
           </motion.div>
           {(isDragActive || isHovered) && (
-             <ShieldAlert className="absolute -top-4 -right-4 text-risk-critical animate-ping" size={32} />
+             <Zap className="absolute -top-10 -right-10 text-static-cyan animate-flicker" size={64} />
           )}
+          <Lock className="absolute -bottom-4 -left-10 text-rage-red/40 animate-spin" size={48} />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-4">
           <p className={cn(
-            "text-2xl font-black tracking-tighter uppercase glitch-text",
+            "text-6xl font-black tracking-tighter uppercase glitch-text font-chaos italic",
             (isHovered || isDragActive) && "glitch-active"
           )}
-          data-text={isDragActive ? "RELEASE_CARGO_FOR_INFECTION" : "INJECT_HOSTILE_PAYLOAD"}
+          data-text={isDragActive ? "FEED_THE_MACHINE" : "INJECT_MALICIOUS_CARGO"}
           >
-            {isDragActive ? "RELEASE_CARGO_FOR_INFECTION" : "INJECT_HOSTILE_PAYLOAD"}
+            {isDragActive ? "FEED_THE_MACHINE" : "INJECT_MALICIOUS_CARGO"}
           </p>
-          <p className="text-[10px] text-risk-critical/60 font-mono italic animate-pulse">
-            VULNERABLE: .EXE, .PDF, .JS, .PY, .BIN :: ENCRYPTION_BYPASS_READY
+          <div className="flex justify-center gap-4">
+            <span className="text-sm bg-rage-red text-white px-4 py-1 font-black animate-jitter">VULNERABILITY: DETECTED</span>
+            <span className="text-sm bg-static-cyan text-void px-4 py-1 font-black animate-jitter">UPLINK: ACTIVE</span>
+          </div>
+          <p className="text-base text-rage-red/60 font-mono italic animate-pulse font-chaos">
+            SYSTEM_ACCEPTS: .EXE, .PDF, .JS, .PY, .BIN :: ENCRYPTION_BYPASS_READY
           </p>
         </div>
-
-        {!isScanning && (
-          <button className="mt-4 px-8 py-2 border border-ghost-green/30 hover:border-ghost-green hover:bg-ghost-green hover:text-void transition-all duration-300 font-bold uppercase tracking-widest text-xs relative overflow-hidden group/btn">
-            <span className="relative z-10">INITIALIZE BREACH</span>
-            <div className="absolute inset-0 w-0 group-hover/btn:w-full transition-all duration-500 bg-ghost-green z-0" />
-          </button>
-        )}
       </div>
 
-      <div className="absolute bottom-2 right-4 flex gap-2">
-        <div className="w-2 h-2 rounded-full bg-ghost-green/20" />
-        <div className="w-2 h-2 rounded-full bg-warning-amber/20 animate-pulse" />
-        <div className="w-2 h-2 rounded-full bg-ghost-green/20" />
+      {/* Interactive scanning lines */}
+      <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-0 w-full h-2 bg-gradient-to-r from-transparent via-static-cyan to-transparent animate-scanline" />
+        <div className="absolute bottom-0 w-full h-2 bg-gradient-to-r from-transparent via-rage-red to-transparent animate-scanline" style={{ animationDirection: 'reverse' }} />
       </div>
     </div>
   );

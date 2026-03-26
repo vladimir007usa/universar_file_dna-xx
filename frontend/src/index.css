@@ -3,19 +3,20 @@
 @tailwind utilities;
 
 :root {
-  background-color: #050505;
-  color: #00ff41;
-  font-family: 'JetBrains Mono', monospace;
+  background-color: #000000;
+  color: #FF0000;
+  font-family: 'Fira Code', monospace;
 }
 
 @layer base {
   body {
-    @apply bg-void text-ghost-green overflow-x-hidden selection:bg-warning-amber selection:text-void;
+    @apply bg-void text-rage-red overflow-x-hidden selection:bg-static-cyan selection:text-void;
+    font-variant-ligatures: none;
   }
 }
 
-/* CRT EFFECTS */
-.crt-overlay {
+/* CRT WARP & CHAOS OVERLAY */
+.crt-warp {
   position: fixed;
   top: 0;
   left: 0;
@@ -23,129 +24,96 @@
   height: 100vh;
   pointer-events: none;
   z-index: 9999;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.1) 50%
-  ),
-  linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.05),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.05)
-  );
-  background-size: 100% 4px, 3px 100%;
+  background: 
+    radial-gradient(circle, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.08), rgba(0, 255, 255, 0.05), rgba(0, 0, 255, 0.08));
+  background-size: 100% 100%, 100% 4px, 3px 100%;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+  transform: perspective(1000px) rotateX(0deg) scale(1.02);
 }
 
 .scanline {
   width: 100%;
-  height: 100px;
-  z-index: 10000;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(255, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  opacity: 0.2;
+  height: 2px;
+  background: rgba(255, 0, 0, 0.3);
+  opacity: 0.5;
   position: fixed;
-  bottom: 100%;
-  animation: scanline 4s linear infinite; /* Faster scanline */
+  z-index: 10000;
   pointer-events: none;
+  animation: scanline 2s linear infinite;
 }
 
-/* MATRIX RAIN */
+.static-noise {
+  position: fixed;
+  inset: 0;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b2/TV_Static.gif');
+  background-size: cover;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.02;
+  mix-blend-mode: color-dodge;
+}
+
+/* MATRIX CHAOS (RED/BLUE) */
 .matrix-bg {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  color: #00ff41;
-  font-family: monospace;
-  font-size: 10px;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.1;
   overflow: hidden;
   pointer-events: none;
-  z-index: -1;
-  opacity: 0.05;
 }
 
-/* Red Alert Mode */
-.red-alert-bg {
-  animation: red-pulse 0.5s infinite alternate;
-}
-
-@keyframes red-pulse {
-  from { background-color: rgba(5, 5, 5, 1); }
-  to { background-color: rgba(50, 0, 0, 1); }
-}
-
-/* Glitch Utility */
-.glitch-text {
+/* ZIGZAG CHAOS BORDERS */
+.zigzag-border {
   position: relative;
+  border: 4px solid transparent;
+  background: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
 }
 
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-}
-
-.glitch-text:hover::before, .glitch-active::before {
-  animation: glitch 0.2s cubic-bezier(.25,.46,.45,.94) both infinite;
-  color: #ff3131;
-  z-index: -1;
-}
-
-.glitch-text:hover::after, .glitch-active::after {
-  animation: glitch 0.2s cubic-bezier(.25,.46,.45,.94) reverse both infinite;
-  color: #00ff41;
-  z-index: -2;
-}
-
-/* Cyber-Industrial Border */
-.cyber-border {
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
-  position: relative;
-  background: rgba(5, 5, 5, 0.9);
-}
-
-.cyber-border::before {
+.zigzag-border::before {
   content: "";
   position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 15px;
-  height: 15px;
-  border-top: 3px solid #00ff41;
-  border-left: 3px solid #00ff41;
+  inset: -4px;
+  background: 
+    linear-gradient(135deg, #FF0000 25%, transparent 25%) -10px 0,
+    linear-gradient(225deg, #FF0000 25%, transparent 25%) -10px 0,
+    linear-gradient(315deg, #FF0000 25%, transparent 25%),
+    linear-gradient(45deg, #FF0000 25%, transparent 25%);
+  background-size: 20px 20px;
+  z-index: -1;
+  animation: flicker 0.1s infinite;
 }
 
-.cyber-border::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 15px;
-  height: 15px;
-  border-bottom: 3px solid #ff3131; /* Changed to Red */
-  border-right: 3px solid #ff3131;
+/* MELTING GRID FILTER */
+.melting-filter {
+  filter: url(#melt);
+}
+
+/* JITTER UTILITY */
+.jitter-text {
+  display: inline-block;
+  animation: jitter 0.1s infinite;
+}
+
+.font-chaos {
+  animation: font-shift 5s infinite;
+}
+
+@keyframes font-shift {
+  0%, 100% { font-family: 'Fira Code', monospace; }
+  33% { font-family: 'serif'; font-style: italic; }
+  66% { font-family: 'Courier New', monospace; letter-spacing: -2px; }
 }
 
 @keyframes scanline {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(100vh); }
+  from { top: -10%; }
+  to { top: 110%; }
 }
 
-@keyframes glitch {
-  0% { transform: translate(0); }
-  25% { transform: translate(-4px, 2px); clip-path: inset(10% 0 30% 0); }
-  50% { transform: translate(4px, -2px); clip-path: inset(50% 0 10% 0); }
-  75% { transform: translate(-2px, 4px); clip-path: inset(80% 0 5% 0); }
-  100% { transform: translate(0); }
+@keyframes red-pulse {
+  from { background-color: rgba(0, 0, 0, 1); box-shadow: inset 0 0 50px rgba(255, 0, 0, 0); }
+  to { background-color: rgba(60, 0, 0, 1); box-shadow: inset 0 0 150px rgba(255, 0, 0, 1); }
 }

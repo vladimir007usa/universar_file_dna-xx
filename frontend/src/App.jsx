@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Terminal as TerminalIcon, Cpu, Lock, Unlock } from 'lucide-react';
+import { ShieldAlert, Terminal as TerminalIcon, Cpu, Lock, Unlock, Skull, Zap } from 'lucide-react';
 import { Header } from './components/Header';
 import { TerminalDropzone } from './components/TerminalDropzone';
 import { RiskMeter } from './components/RiskMeter';
@@ -9,36 +9,60 @@ import { MetadataMatrix } from './components/MetadataMatrix';
 const MatrixRain = () => {
   return (
     <div className="matrix-bg">
-      {Array.from({ length: 15 }).map((_, i) => (
-        <div key={i} className="absolute inline-block whitespace-pre opacity-20 text-[8px] animate-scanline" 
-             style={{ left: `${i * 7}%`, animationDuration: `${Math.random() * 5 + 5}s`, animationDelay: `${Math.random() * 5}s` }}>
-          {"X0Y1Z".repeat(20)}
+      {Array.from({ length: 30 }).map((_, i) => (
+        <div 
+          key={i} 
+          className="absolute inline-block whitespace-pre text-[10px] animate-scanline font-mono" 
+          style={{ 
+            left: `${i * 3.3}%`, 
+            animationDuration: `${Math.random() * 2 + 1}s`,
+            color: i % 2 === 0 ? '#FF0000' : '#00FFFF',
+            opacity: Math.random() * 0.5
+          }}
+        >
+          {Array.from({ length: 40 }).map(() => String.fromCharCode(33 + Math.random() * 94)).join('\n')}
         </div>
       ))}
     </div>
   );
 };
 
-const BreachModal = ({ isOpen, onClose }) => (
+const ChaosOverlay = ({ active }) => (
+  <AnimatePresence>
+    {active && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.1, 0, 0.05, 0] }}
+        transition={{ repeat: Infinity, duration: 0.2 }}
+        className="fixed inset-0 z-[10000] pointer-events-none bg-white mix-blend-difference"
+      />
+    )}
+  </AnimatePresence>
+);
+
+const BreachPopup = ({ isOpen, onClose }) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div 
-        initial={{ opacity: 0, scale: 2 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[10000] bg-risk-critical/20 backdrop-blur-xl flex flex-col items-center justify-center p-12 border-[20px] border-risk-critical animate-flicker"
+        initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        exit={{ opacity: 0, scale: 2 }}
+        className="fixed inset-0 z-[11000] bg-void flex flex-col items-center justify-center p-6 border-[50px] border-rage-red animate-flicker"
       >
-        <ShieldAlert size={120} className="text-risk-critical animate-bounce" />
-        <h2 className="text-6xl font-black text-risk-critical tracking-tighter italic mt-8 glitch-text glitch-active" data-text="SYSTEM COMPROMISED">
-          SYSTEM COMPROMISED
-        </h2>
-        <p className="text-xl font-mono text-risk-critical/80 mt-4 uppercase">Direct Breach Detected :: IP_LOGGED :: ENCRYPTION_FAILED</p>
-        <button 
-          onClick={onClose}
-          className="mt-12 px-12 py-4 bg-risk-critical text-void font-black text-xl hover:scale-110 transition-transform uppercase tracking-widest"
-        >
-          ACKNOWLEDGE_THREAT
-        </button>
+        <div className="absolute inset-0 bg-static-cyan/10 animate-pulse" />
+        <div className="relative z-10 text-center space-y-8">
+          <h1 className="text-8xl font-black text-rage-red tracking-tighter italic glitch-text glitch-active uppercase" data-text="SYSTEM_INTEGRITY: COMPROMISED">
+            SYSTEM_INTEGRITY: COMPROMISED
+          </h1>
+          <div className="h-2 bg-static-cyan animate-jitter" />
+          <p className="text-3xl font-mono text-static-cyan uppercase font-chaos">PAYLOAD_STATUS: ACTIVE :: EXFILTRATING_MEM_DUMP</p>
+          <button 
+            onClick={onClose}
+            className="px-20 py-8 bg-rage-red text-white text-4xl font-black hover:bg-static-cyan hover:text-void transition-all transform hover:scale-110 active:scale-95 border-8 border-white"
+          >
+            TERMINATE_SESSION
+          </button>
+        </div>
       </motion.div>
     )}
   </AnimatePresence>
@@ -52,33 +76,34 @@ const DecryptingLoader = ({ onComplete }) => {
       setProgress((v) => {
         if (v >= 100) {
           clearInterval(interval);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 300);
           return 100;
         }
-        return v + Math.floor(Math.random() * 15) + 5;
+        return v + Math.floor(Math.random() * 25) + 5;
       });
-    }, 150);
+    }, 100);
     return () => clearInterval(interval);
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-void flex flex-col items-center justify-center font-mono">
-      <div className="w-64 space-y-4">
-        <div className="flex justify-between items-end text-ghost-green">
-          <span className="text-xs tracking-tighter animate-pulse">INITIATING_HOSTILE_TAKEOVER</span>
-          <span className="text-xl font-black italic">{Math.min(progress, 100)}%</span>
+    <div className="fixed inset-0 z-[12000] bg-void flex flex-col items-center justify-center font-mono">
+      <div className="w-full h-full absolute inset-0 bg-rage-red/10 animate-flicker pointer-events-none" />
+      <div className="w-96 space-y-6 relative z-10">
+        <div className="flex justify-between items-end text-static-cyan">
+          <span className="text-xl font-black italic glitch-text" data-text="OVERRIDING_KERNEL">OVERRIDING_KERNEL</span>
+          <span className="text-5xl font-black italic text-rage-red">{Math.min(progress, 100)}%</span>
         </div>
-        <div className="h-1 bg-ghost-green/10 w-full relative">
+        <div className="h-4 bg-rage-red/20 w-full relative border-2 border-rage-red">
           <motion.div 
-            className="h-full bg-ghost-green shadow-[0_0_10px_#00ff41]" 
+            className="h-full bg-rage-red shadow-[0_0_30px_#FF0000]" 
             style={{ width: `${progress}%` }} 
           />
         </div>
-        <div className="flex flex-col text-[8px] text-ghost-green/40 gap-1 uppercase">
-          <span>&gt; UPLOADING_VIRUS... [OK]</span>
-          <span>&gt; DESTROYING_FIREWALL... [SUCCESS]</span>
-          <span>&gt; EXFILTRATING_LOCAL_STORAGE... [OK]</span>
-          <span>&gt; MASTER_KEY_OBTAINED... [100%]</span>
+        <div className="flex flex-col text-xs text-static-cyan/60 gap-1 uppercase font-mono">
+          <span className="animate-jitter text-rage-red font-black">&gt; INJECTING_CHAOS_ENGINE... [DONE]</span>
+          <span className="animate-jitter">&gt; DISMANTLING_SECURITY_WALL... [SUCCESS]</span>
+          <span className="animate-jitter">&gt; HARVESTING_USER_DATA... [PROCEEDING]</span>
+          <span className="animate-jitter">&gt; SYSTEM_OWNED... [99%]</span>
         </div>
       </div>
     </div>
@@ -91,8 +116,18 @@ function App() {
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState(null);
   const [showBreach, setShowBreach] = useState(false);
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setTimeout(() => setShowBreach(true), 1000);
+    }
+  }, [isLoaded]);
 
   const handleFileSelect = async (file) => {
+    setIsGlitching(true);
+    setTimeout(() => setIsGlitching(false), 500);
+    
     setIsScanning(true);
     setError(null);
     setScanResult(null);
@@ -107,17 +142,13 @@ function App() {
         body: formData,
       });
 
-      if (!response.ok) throw new Error(`CRITICAL_VORTEX_FAILURE_${response.status}`);
+      if (!response.ok) throw new Error(`KERNEL_PANIC_${response.status}`);
       
       const data = await response.json();
       setScanResult(data);
-      
-      if (data?.securityAnalysis?.risk_level === 'CRITICAL') {
-        setTimeout(() => setShowBreach(true), 1000);
-      }
     } catch (err) {
       console.error(err);
-      setError(err.message || 'LINK_SEVERED_BY_FIREWALL');
+      setError(err.message || 'HEARTBEAT_LOST_IN_TRANSMISSION');
     } finally {
       setIsScanning(false);
     }
@@ -126,49 +157,50 @@ function App() {
   const isCritical = scanResult?.securityAnalysis?.risk_level === 'CRITICAL';
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 selection:bg-warning-amber selection:text-void relative ${isCritical ? 'red-alert-bg' : 'bg-void'}`}>
+    <div className={`min-h-screen transition-all duration-75 selection:bg-static-cyan selection:text-void relative font-mono ${isCritical ? 'red-alert-bg' : 'bg-void'}`}>
       <MatrixRain />
-      <div className="crt-overlay" />
+      <div className="crt-warp" />
       <div className="scanline" />
+      <div className="static-noise" />
+      <ChaosOverlay active={isGlitching || isScanning} />
       
       <AnimatePresence>
         {!isLoaded && <DecryptingLoader onComplete={() => setIsLoaded(true)} />}
       </AnimatePresence>
 
-      <BreachModal isOpen={showBreach} onClose={() => setShowBreach(false)} />
+      <BreachPopup isOpen={showBreach} onClose={() => setShowBreach(false)} />
 
       <div className="relative z-10">
         <Header />
         
-        <main className="max-w-7xl mx-auto p-6 space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Col: Upload & Status */}
-            <div className="lg:col-span-2 space-y-6">
+        <main className="max-w-7xl mx-auto p-6 space-y-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2 space-y-8">
               <TerminalDropzone onFileSelect={handleFileSelect} isScanning={isScanning} />
               
               <AnimatePresence mode="wait">
                 {isScanning && (
                   <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    className="cyber-border !border-risk-critical bg-risk-critical/5 p-12 flex flex-col items-center justify-center gap-6"
+                    key="scanning"
+                    className="zigzag-border p-16 flex flex-col items-center justify-center gap-8 bg-void/90"
                   >
                     <div className="relative">
-                       <Cpu className="text-risk-critical animate-spin" size={48} />
-                       <div className="absolute inset-0 bg-risk-critical/40 blur-2xl animate-pulse" />
+                       <Cpu className="text-static-cyan animate-spin" size={80} />
+                       <div className="absolute inset-0 bg-rage-red/40 blur-3xl animate-pulse" />
                     </div>
-                    <div className="text-center space-y-4">
-                       <h3 className="text-2xl font-black tracking-tighter uppercase text-risk-critical animate-pulse">EXFILTRATING_DATA</h3>
-                       <div className="w-64 h-2 bg-risk-critical/10 relative">
-                          <motion.div 
-                            className="h-full bg-risk-critical"
-                            initial={{ width: 0 }}
-                            animate={{ width: "100%" }}
-                            transition={{ duration: 5, repeat: Infinity }}
-                          />
+                    <div className="text-center space-y-6">
+                       <h3 className="text-5xl font-black text-rage-red animate-jitter italic">EXFILTRATING_CORE_DUMP</h3>
+                       <div className="flex gap-2">
+                        {Array.from({ length: 24 }).map((_, i) => (
+                          <div key={i} className="w-2 h-8 bg-static-cyan/20 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                        ))}
                        </div>
-                       <p className="text-[10px] text-risk-critical/40 font-mono italic">CLONING_DRIVE_C :: REDIRECTING_PACKETS_TO_STATION_UNKNOWN</p>
+                       <p className="text-xs text-static-cyan font-mono font-chaos">
+                        {Array.from({ length: 4 }).map(() => Math.random().toString(16).substring(2, 10)).join(' ')}
+                       </p>
                     </div>
                   </motion.div>
                 )}
@@ -177,11 +209,12 @@ function App() {
                    <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="cyber-border bg-void/60 p-8 flex items-center justify-center"
+                    key="idle"
+                    className="zigzag-border bg-void/80 p-12 flex items-center justify-center border-rage-red/10"
                    >
-                     <div className="flex items-center gap-4 text-ghost-green/20 uppercase font-mono tracking-widest">
-                        <Lock size={20} />
-                        <span>System Armed :: Ready for Breach</span>
+                     <div className="flex items-center gap-6 text-rage-red/20 uppercase font-mono tracking-widest text-xl animate-jitter">
+                        <Lock size={32} />
+                        <span className="font-chaos">System Arraigned :: Awaiting Exploitation</span>
                      </div>
                    </motion.div>
                 )}
@@ -190,25 +223,25 @@ function App() {
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="cyber-border !border-risk-critical bg-risk-critical/5 p-8 flex flex-col items-center gap-4 text-center"
+                    key="error"
+                    className="zigzag-border border-static-cyan bg-static-cyan/5 p-12 flex flex-col items-center gap-8 text-center"
                   >
-                     <ShieldAlert size={48} className="text-risk-critical" />
+                     <ShieldAlert size={80} className="text-static-cyan animate-bounce" />
                      <div>
-                       <h3 className="text-xl font-black text-risk-critical uppercase tracking-tighter italic">CONNECTION_TERMINATED</h3>
-                       <p className="text-xs text-risk-critical/60 font-mono mt-2 uppercase">{error}</p>
+                       <h3 className="text-3xl font-black text-static-cyan uppercase tracking-tighter italic font-chaos">TRANSMISSION_LOST</h3>
+                       <p className="text-base text-static-cyan/60 font-mono mt-4 uppercase glitch-text" data-text={error}>{error}</p>
                      </div>
                      <button 
                         onClick={() => setError(null)}
-                        className="px-6 py-1 border border-risk-critical text-risk-critical text-[10px] font-bold tracking-widest uppercase hover:bg-risk-critical hover:text-void transition-all"
+                        className="px-12 py-3 bg-static-cyan text-void font-black text-xs tracking-widest uppercase hover:scale-110 transition-all border-4 border-white"
                      >
-                       RE-ESTABLISH_CONNECTION
+                       RE_ESTABLISH_UPLINK
                      </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Right Col: Risk Visualization */}
             <div className="lg:col-span-1">
               <RiskMeter riskLevel={scanResult?.securityAnalysis?.risk_level} />
             </div>
@@ -217,14 +250,15 @@ function App() {
           <AnimatePresence>
             {scanResult && !isScanning && (
               <motion.div
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 100 }}
+                key="results"
+                className="space-y-4"
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-[2px] flex-1 bg-ghost-green/10" />
-                  <span className="text-[10px] font-mono text-ghost-green/40 uppercase tracking-[0.3em]">Data Harvest Results</span>
-                  <div className="h-[2px] flex-1 bg-ghost-green/10" />
+                <div className="flex items-center gap-8 mb-8 overflow-hidden">
+                  <div className="h-4 flex-1 bg-rage-red/10 animate-pulse" />
+                  <span className="text-xl font-black font-mono text-rage-red uppercase tracking-[0.5em] jitter-text" data-text="HARVESTED_INTEL">HARVESTED_INTEL</span>
+                  <div className="h-4 flex-1 bg-rage-red/10 animate-pulse" />
                 </div>
                 <MetadataMatrix data={scanResult} />
               </motion.div>
@@ -233,10 +267,12 @@ function App() {
         </main>
       </div>
 
-      {/* Background patterns */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.05] z-0">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] scale-50" />
-      </div>
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <filter id="melt">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.05" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" />
+        </filter>
+      </svg>
     </div>
   );
 }
