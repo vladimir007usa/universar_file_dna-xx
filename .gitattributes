@@ -1,0 +1,10 @@
+# Mark generated Flutter Web assets as vendored to hide them from language statistics
+public/** linguist-vendored
+public/*.js linguist-vendored
+public/*.html linguist-vendored
+public/canvaskit/** linguist-vendored
+
+# Also mark the logic-engine and middleware if needed, but they are source code.
+# Ensure Python and Dart are correctly recognized.
+*.py linguist-detectable=true
+*.dart linguist-detectable=true
