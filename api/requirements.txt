@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-multipart
+python-magic
+ExifRead
+pdfminer.six
+python-docx
+beautifulsoup4
+hachoir
+# yara-python # Commenting out as it may fail on Vercel without C libs

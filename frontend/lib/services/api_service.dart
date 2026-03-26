@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 
 /// Service to communicate with the Java Spring Boot middleware.
 class ApiService {
-  static const String _baseUrl = 'http://localhost:8080';
+  /// Base URL for the API. Empty string for relative paths on Vercel.
+  static const String _baseUrl = '';
 
   /// Upload a file to the middleware for analysis.
   /// Returns the full JSON response as a Map.

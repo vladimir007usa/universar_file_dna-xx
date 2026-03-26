@@ -1,0 +1,9 @@
+{
+  "name": "Universal File DNA Explorer",
+  "short_name": "FileDNA",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff41",
+  "description": "Extract deep metadata and detect security threats from any file."
+}
