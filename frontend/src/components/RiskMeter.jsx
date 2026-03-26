@@ -1,3 +1,6 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+
 export const RiskMeter = ({ riskLevel = 'UNKNOWN' }) => {
   const levels = {
     'CLEAN': { color: '#00FFFF', percent: 10, label: 'SECURE_UPLINK' },

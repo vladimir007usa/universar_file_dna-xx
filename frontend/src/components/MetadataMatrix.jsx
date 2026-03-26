@@ -1,6 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FileCode, Database, ShieldCheck, AlertCircle, Info } from 'lucide-react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs) {
+  return twMerge(clsx(...inputs));
+}
 
 const Card = ({ title, icon: Icon, children, accent = "rage-red" }) => (
   <div className={`zigzag-border !border-l-8 !border-l-${accent} bg-void/90 p-6 space-y-4 relative overflow-hidden group`}>
