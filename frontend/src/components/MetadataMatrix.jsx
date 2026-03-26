@@ -37,17 +37,17 @@ export const MetadataMatrix = ({ data }) => {
       {/* 1. File Identity */}
       <Card title="REQUISITION_IDENTITY" icon={FileCode} accent="ghost-green">
         <Row label="FILENAME" value={fileName} />
-        <Row label="SIZE" value={`${(fileSize / 1024).toFixed(2)} KB`} />
+        <Row label="SIZE" value={fileSize ? `${(fileSize / 1024).toFixed(2)} KB` : '0 KB'} />
         <Row label="MIME_DETECTION" value={detectedType} />
         <Row label="RESOURCE_NAME" value={metadata?.resourceName} />
       </Card>
 
       {/* 2. Extraction DNA */}
       <Card title="METADATA_DNA" icon={Database} accent="warning-amber">
-        <Row label="AUTHOR" value={metadata['Author'] || metadata['creator']} />
-        <Row label="MODIFIED" value={metadata['Last-Modified'] || metadata['date']} />
-        <Row label="SOFTWARE" value={metadata['Application'] || metadata['producer']} />
-        <Row label="PAGES" value={metadata['xmpTPg:NPages']} />
+        <Row label="AUTHOR" value={metadata?.['Author'] || metadata?.['creator'] || metadata?.['dc:creator']} />
+        <Row label="MODIFIED" value={metadata?.['Last-Modified'] || metadata?.['date'] || metadata?.['dcterms:modified']} />
+        <Row label="SOFTWARE" value={metadata?.['Application'] || metadata?.['producer'] || metadata?.['xmp:CreatorTool']} />
+        <Row label="PAGES" value={metadata?.['xmpTPg:NPages']} />
       </Card>
 
       {/* 3. Security Analysis */}

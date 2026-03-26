@@ -9,9 +9,10 @@ import { MetadataMatrix } from './components/MetadataMatrix';
 const MatrixRain = () => {
   return (
     <div className="matrix-bg">
-      {Array.from({ length: 20 }).map((_, i) => (
-        <div key={i} className="absolute inline-block whitespace-pre animate-scanline" style={{ left: `${i * 5}%`, animationDelay: `${Math.random() * 5}s` }}>
-          {Array.from({ length: 50 }).map(() => String.fromCharCode(0x30A0 + Math.random() * 96)).join('\n')}
+      {Array.from({ length: 15 }).map((_, i) => (
+        <div key={i} className="absolute inline-block whitespace-pre opacity-20 text-[8px] animate-scanline" 
+             style={{ left: `${i * 7}%`, animationDuration: `${Math.random() * 5 + 5}s`, animationDelay: `${Math.random() * 5}s` }}>
+          {"X0Y1Z".repeat(20)}
         </div>
       ))}
     </div>
