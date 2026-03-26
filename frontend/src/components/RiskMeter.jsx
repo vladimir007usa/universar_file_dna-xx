@@ -69,11 +69,13 @@ export const RiskMeter = ({ riskLevel = 'UNKNOWN' }) => {
 
       <motion.div 
         animate={riskLevel === 'CRITICAL' ? {
-          x: [-2, 2, -2, 2, 0],
+          x: [-5, 5, -5, 5, 0],
+          scale: [1, 1.1, 1],
           transition: { repeat: Infinity, duration: 0.1 }
         } : {}}
-        className="mt-4 px-6 py-1 bg-opacity-10 border border-opacity-30 rounded-sm text-xs font-bold tracking-widest uppercase"
-        style={{ backgroundColor: `${current.color}22`, borderColor: current.color, color: current.color }}
+        className="mt-4 px-6 py-2 bg-opacity-20 border-2 rounded-none text-sm font-black tracking-tighter italic uppercase glitch-text glitch-active"
+        style={{ backgroundColor: `${current.color}44`, borderColor: current.color, color: current.color }}
+        data-text={current.label}
       >
         {current.label}
       </motion.div>

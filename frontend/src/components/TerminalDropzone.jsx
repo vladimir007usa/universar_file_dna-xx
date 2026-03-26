@@ -54,31 +54,37 @@ export const TerminalDropzone = ({ onFileSelect, isScanning }) => {
       <div className="relative z-10 flex flex-col items-center gap-6 p-8 text-center">
         <div className="relative">
           <motion.div
-            animate={isHovered ? {
-              skewX: [0, -2, 2, -1, 0],
-              x: [0, -1, 1, 0],
+            animate={(isHovered || isDragActive) ? {
+              skewX: [0, -10, 10, -5, 0],
+              x: [0, -5, 5, 0],
+              filter: ["none", "hue-rotate(90deg)", "none"]
             } : {}}
-            transition={{ repeat: Infinity, duration: 0.2 }}
+            transition={{ repeat: Infinity, duration: 0.1 }}
           >
             <Terminal 
-              size={64} 
+              size={80} 
               className={cn(
                 "transition-colors duration-300",
-                isDragActive ? "text-ghost-green" : "text-ghost-green/20 group-hover:text-ghost-green"
+                isDragActive ? "text-risk-critical" : "text-ghost-green/20 group-hover:text-risk-critical"
               )} 
             />
           </motion.div>
-          {isDragActive && (
-             <ShieldAlert className="absolute -top-2 -right-2 text-warning-amber animate-bounce" size={24} />
+          {(isDragActive || isHovered) && (
+             <ShieldAlert className="absolute -top-4 -right-4 text-risk-critical animate-ping" size={32} />
           )}
         </div>
 
         <div className="space-y-2">
-          <p className="text-xl font-bold tracking-widest uppercase">
-            {isDragActive ? "RELEASE PAYLOAD FOR ANALYSIS" : "DRAG & DROP SECURED PAYLOAD"}
+          <p className={cn(
+            "text-2xl font-black tracking-tighter uppercase glitch-text",
+            (isHovered || isDragActive) && "glitch-active"
+          )}
+          data-text={isDragActive ? "RELEASE_CARGO_FOR_INFECTION" : "INJECT_HOSTILE_PAYLOAD"}
+          >
+            {isDragActive ? "RELEASE_CARGO_FOR_INFECTION" : "INJECT_HOSTILE_PAYLOAD"}
           </p>
-          <p className="text-xs text-ghost-green/40 font-mono italic">
-            SUPPORTED: .EXE, .PDF, .DOCX, .JS, .PY, .BIN, .HTML
+          <p className="text-[10px] text-risk-critical/60 font-mono italic animate-pulse">
+            VULNERABLE: .EXE, .PDF, .JS, .PY, .BIN :: ENCRYPTION_BYPASS_READY
           </p>
         </div>
 
